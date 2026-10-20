@@ -1,0 +1,5 @@
+# CoD4toSOF2 - running from source
+pillow>=9.0
+numpy>=1.20
+# optional: nicer looking GUI. Plain Tk is used when it is not installed.
+customtkinter>=5.0

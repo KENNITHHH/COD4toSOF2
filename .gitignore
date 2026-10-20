@@ -1,0 +1,8 @@
+__pycache__/
+*.py[cod]
+build/
+dist/
+*.spec.bak
+cod4tosof2_settings.json
+paths.cmd
+output/

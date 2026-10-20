@@ -1,0 +1,59 @@
+@echo off
+rem Copy this file to  paths.cmd  (same folder as CoD4toSOF2.exe) and edit it.
+rem compile_cod4_map.bat reads it on every Compile, from the GUI as well as
+rem when you run the .bat by hand.
+rem
+rem Every setting below uses "if not defined", so anything the GUI already
+rem passes wins and this file only fills in what is missing. Do not change
+rem that to a plain "set" for the path variables, or compiling from the GUI
+rem will use these paths instead of the ones in the GUI.
+
+rem ---------------------------------------------------------------- paths
+rem Only needed when you run compile_cod4_map.bat directly; the GUI's Compile
+rem button passes all three itself.
+
+rem q3map2.exe from NetRadiant or GtkRadiant
+if not defined Q3MAP2   set "Q3MAP2=C:\Games\NetRadiant\q3map2.exe"
+
+rem The folder that CONTAINS base\ -- not base\ itself
+if not defined GAMEROOT set "GAMEROOT=C:\Games\Soldier of Fortune II - Double Helix"
+
+rem CoD4toSOF2's output folder: the one holding <mapname>\maps, \shaders, ...
+if not defined OUTDIR   set "OUTDIR=C:\CoD4toSOF2\output"
+
+rem ------------------------------------------------------------- lighting
+rem These are not set by the GUI, so they belong here if you want to change
+rem them. Uncomment and edit. Every one of them needs a Compile to take
+rem effect, because the lighting is baked into the .bsp.
+rem
+rem q3map2 turns a light value into a byte as
+rem     v = pow(v/255, 1/GAMMA) * 255
+rem     if EXPOSURE: v = v * (1 - exp(-v/EXPOSURE)) * 255 / v
+rem
+rem GAMMA defaults to 1.6. The CS:S pipeline's 2.2 lifted the midtones hard -
+rem 128 came out at 186, and everything from 192 up landed within a few values
+rem of 255, so grey metal and snow read as flat white. NOTE: cod4mat2shader
+rem derives the sun intensity from LIGHT_GAMMA, which must match this. Change
+rem both or neither.
+rem set "COD4TOSOF2_GAMMA=1.6"
+rem
+rem EXPOSURE (0 = off) adds an exponential roll-off AFTER gamma, so nothing
+rem reaches pure white and highlights keep their detail. It flattens the
+rem image a little: at 200 the brightest value becomes 184 instead of 255.
+rem Try it if lowering gamma alone still clips.
+rem set "COD4TOSOF2_EXPOSURE=200"
+rem
+rem GRIDSCALE boosts the light grid, which lights the model_static props and
+rem anything vertex-lit - not the lightmaps. Raise it if the props look dark
+rem against the world, lower it if they glow.
+rem set "COD4TOSOF2_GRIDSCALE=4.59"
+rem
+rem BOUNCE is q3map2 radiosity, and it is OFF (0) because it does not finish
+rem on a big map. Measured on mp_strike: the direct light pass runs on 76
+rem lights and takes 34 seconds, and -bounce 1 turns those into 122,201
+rem diffuse lights over 2.45 million luxels - still running after two hours.
+rem CoD's own radiosity numbers (sunradiosity / radiosityscale in the
+rem worldspawn) go into q3map_skyLight instead, which costs nothing. Setting
+rem this to 1 is worth a try on a small map - mp_shipment has 162 clusters
+rem where Strike has 1030 - but expect hours on anything Strike's size.
+rem set "COD4TOSOF2_BOUNCE=0"
